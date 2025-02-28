@@ -1,0 +1,10 @@
+# macOS system files
+.DS_Store
+
+# Python package metadata
+/fineTuningForConversationalAI.egg-info/
+/fineTuningForConversationalAI.egg-info/*
+
+# Virtual environment
+/fine-tune-venv/
+/fine-tune-venv/*

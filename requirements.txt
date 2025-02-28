@@ -1,0 +1,10 @@
+torch
+torchao
+transformers
+datasets
+ollama
+tqdm
+peft
+wandb
+evaluate
+scikit-learn
