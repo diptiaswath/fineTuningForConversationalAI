@@ -1,3 +1,8 @@
+# Portions of this file are based on work by Sebastian Raschka under Apache License 2.0.
+# Source: "Build a Large Language Model From Scratch"
+#   - https://www.manning.com/books/build-a-large-language-model-from-scratch
+# Original code: https://github.com/rasbt/LLMs-from-scratch
+
 import json
 import psutil
 from tqdm import tqdm
@@ -111,7 +116,6 @@ def generate_model_scores(json_data, json_key, model="deepseek-r1:8"):
 
 
 if __name__ == "__main__":
-    
     parser = argparse.ArgumentParser(
         description="Evaluate model responses with ollama"
     )
