@@ -199,6 +199,7 @@ class ModelInference:
 
 
 def main_example():
+    # All paths here can be read from a config file or provided as input args
     base_model_cache_path = "/content/drive/My Drive/Colab Notebooks/CMU_LargeLanguageModels/cache"
     adapter_path = "/content/drive/My Drive/Colab Notebooks/CMU_LargeLanguageModels/llama2_7B_lora_single_device_outputs/epoch_0"
     
