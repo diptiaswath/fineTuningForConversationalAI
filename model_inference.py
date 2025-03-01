@@ -209,10 +209,8 @@ def main_example():
     instruction = "Classify this news article."
     input_text = "Wall St. Bears Claw Back Into the Black (Reuters) Reuters - Short-sellers, Wall Street's dwindling band of ultra-cynics, are seeing green again."
     
-    hf_token = os.environ.get("HF_TOKEN")
-    
     # Load the baseline model
-    baseline_inference = ModelInference.from_pretrained(base_model_cache_path, base_model_name="meta-llama/Llama-2-7b-hf")
+    baseline_inference = ModelInference.from_pretrained(base_model_cache_path, base_model_name="meta-llama/Llama-2-7b-hf", hf_token=os.environ.get("HF_TOKEN"))
     
     print("\n=== Running Single Inference with Base Model ===")
     baseline_inference.run_inference(instruction, input_text, max_new_tokens=30)

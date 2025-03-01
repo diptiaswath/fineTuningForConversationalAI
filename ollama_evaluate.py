@@ -8,6 +8,7 @@ import psutil
 from tqdm import tqdm
 import urllib.request
 import argparse
+import re
 
 def query_model(prompt, model="deepseek-r1:8b", url="http://localhost:11434/api/chat"):
     """Send a prompt to the specified model via Ollama API and return the response."""
@@ -66,6 +67,51 @@ def format_input(entry):
     input_text = f"\n\n### Input:\n{entry['input']}" if entry["input"] else ""
     return instruction_text + input_text
 
+def extract_score(response):
+    """Extract score after </think> tag """
+    after_think_match = re.search(r'</think>\s*(.*)', response, re.DOTALL)    
+    if after_think_match and after_think_match.group(1).strip():
+        # Get the first number in the content after </think>
+        number_match = re.match(r'^\d+$', after_think_match.group(1).strip())
+        if number_match:
+            return int(number_match.group(0))
+    
+    # Fallback: Extract last number in the entire string
+    all_numbers = re.findall(r'\d+', response)
+    if all_numbers:
+        return int(all_numbers[-1])
+    
+    return None
+
+def generate_model_scores(json_data, json_key, model="deepseek-r1:8"):
+    """Score model responses against reference outputs using another LLM as judge."""
+    scores = []
+    for entry in tqdm(json_data, desc="Scoring entries"):
+        if entry[json_key] == "":
+            scores.append(0)
+        else:
+            prompt = (
+                f"Given the input `{format_input(entry)}` "
+                f"and correct output `{entry['output']}`, "
+                f"score the model response `{entry[json_key]}`"
+                f" on a scale from 0 to 100, where 100 is the best score. "
+                f"IMPORTANT: Your final answer must be EXACTLY one integer number between 0 and 100. "
+                f"Do not write any text before or after the number. "
+                f"Do not explain your reasoning. "
+                f"Type only the number. "
+            )
+            score = query_model(prompt, model)
+            try:
+                scores.append(int(score))
+            except ValueError:
+                extracted_score = extract_score(score)
+                if extracted_score is not None:
+                    scores.append(extracted_score)
+                else:
+                    print(f"Could not convert or extract score: {score}")
+                    continue
+
+    return scores
 
 def main(file_path):
     ollama_running = check_if_running("ollama")
@@ -89,31 +135,6 @@ def main(file_path):
     scores = generate_model_scores(test_data, "model_response", model)
     print(f"Number of scores: {len(scores)} of {len(test_data)}")
     print(f"Average score: {sum(scores)/len(scores):.2f}\n")
-
-
-def generate_model_scores(json_data, json_key, model="deepseek-r1:8"):
-    """Score model responses against reference outputs using another LLM as judge."""
-    scores = []
-    for entry in tqdm(json_data, desc="Scoring entries"):
-        if entry[json_key] == "":
-            scores.append(0)
-        else:
-            prompt = (
-                f"Given the input `{format_input(entry)}` "
-                f"and correct output `{entry['output']}`, "
-                f"score the model response `{entry[json_key]}`"
-                f" on a scale from 0 to 100, where 100 is the best score. "
-                f"Respond with the integer number only."
-            )
-            score = query_model(prompt, model)
-            try:
-                scores.append(int(score))
-            except ValueError:
-                print(f"Could not convert score: {score}")
-                continue
-
-    return scores
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
