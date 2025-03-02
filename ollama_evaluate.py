@@ -9,6 +9,8 @@ from tqdm import tqdm
 import urllib.request
 import argparse
 import re
+import requests
+import time
 
 def query_model(prompt, model="deepseek-r1:8b", url="http://localhost:11434/api/chat"):
     """Send a prompt to the specified model via Ollama API and return the response."""
@@ -33,16 +35,34 @@ def query_model(prompt, model="deepseek-r1:8b", url="http://localhost:11434/api/
     request = urllib.request.Request(url, data=payload, method="POST")
     request.add_header("Content-Type", "application/json")
 
-    # Send the request and capture the response
+    # Send request and retrieve response
     response_data = ""
-    with urllib.request.urlopen(request) as response:
-        # Read and decode the response
-        while True:
-            line = response.readline().decode("utf-8")
-            if not line:
+    
+    try:
+        response = requests.post(
+            url,
+            json=json.loads(payload),
+            headers={"Content-Type": "application/json"},
+            stream=True,
+            timeout=(5.0, 1.0)  # Connect timeout= 5 seconds, Read timeout= 1 second
+        )
+        
+        for line in response.iter_lines():
+            start_time = time.time()
+            
+            if line:
+                try:
+                    response_json = json.loads(line)
+                    response_data += response_json["message"]["content"]
+                except json.JSONDecodeError:
+                    print("Error decoding JSON")
+                    
+            # Manual Timeout if retrieving a response for each line takes > 1 second
+            if time.time() - start_time > 1.0:  # 1.0 second timeout per line
+                print("Processing took too long, moving on")
                 break
-            response_json = json.loads(line)
-            response_data += response_json["message"]["content"]
+    except requests.exceptions.Timeout:
+        print("Request timed out")
 
     return response_data
 
