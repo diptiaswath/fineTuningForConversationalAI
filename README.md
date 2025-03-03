@@ -43,12 +43,12 @@ Each component functions independently while maintaining seamless integration, a
 - **Evaluation**: Ollama for running the DeepSeek evaluation model
 
 ### Results
-- 92% classification accuracy (15% improvement over base model)
-- 30% improvement in response coherence
-- 88% accuracy in instruction following (vs. 65% for base model)
-- Performance variance by category: Sports (96%) to Business (87%)
-
-This approach demonstrates how parameter-efficient fine-tuning can create specialized applications without prohibitive computational requirements, making customized language models more accessible to organizations.
+- Model achieved 95.29/100 score across 4,950 test examples (evaluated by DeepSeek R1 LLaMA distilled model)
+- Fine-tuned model significantly outperformed base LLaMA2 in news classification tasks
+## Key improvements in instruction following 
+- Consistently understood classification requirements
+- Enhanced response quality with more coherent outputs and better context understanding
+- Implementation used LoRA fine-tuning method, requiring less computing resources than traditional approaches
 
 ## Deep Dives
 A more comprehensive guide can be found [here](https://substack.com/home/post/p-158242776)
