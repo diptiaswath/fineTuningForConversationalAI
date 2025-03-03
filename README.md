@@ -51,7 +51,7 @@ Each component functions independently while maintaining seamless integration, a
 This approach demonstrates how parameter-efficient fine-tuning can create specialized applications without prohibitive computational requirements, making customized language models more accessible to organizations.
 
 ## Deep Dives
-A more comprehensive guide can be found here: <link>
+A more comprehensive guide can be found [here](https://substack.com/home/post/p-158242776)
 
 ## Environment Setup
 1. Install conda: `bash setup-conda.sh && source ~/.bashrc`
