@@ -45,7 +45,7 @@ Each component functions independently while maintaining seamless integration, a
 ### Results
 - Model achieved 95.29/100 score across 4,950 test examples (evaluated by DeepSeek R1 LLaMA distilled model)
 - Fine-tuned model significantly outperformed base LLaMA2 in news classification tasks
-## Key improvements in instruction following 
+#### Key improvements in instruction following 
 - Consistently understood classification requirements
 - Enhanced response quality with more coherent outputs and better context understanding
 - Implementation used LoRA fine-tuning method, requiring less computing resources than traditional approaches
